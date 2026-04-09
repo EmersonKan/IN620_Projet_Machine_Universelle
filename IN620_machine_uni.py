@@ -45,7 +45,7 @@ def lire_machine(contenu_fichier):
     return MT(transitions, k)
 
 def configuration_initiale(mot, machine):
-    # Le mot d'entrée est sur le premier ruban, les autres sont vides [cite: 19]
+    # Le mot d'entrée est sur le premier ruban, les autres sont vides
     rubans = [list(mot) if len(mot) > 0 else ['_']]
     for _ in range(machine.k - 1):
         rubans.append(['_'])
