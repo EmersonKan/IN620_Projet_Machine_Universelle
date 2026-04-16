@@ -1,0 +1,105 @@
+============================================
+=============== QUESTION 6 =================
+============================================
+
+---- Comparaison x<y
+
+
+
+
+
+
+// Input: a#b (a and b are binary numbers)
+// Ouput: TRUE
+// Example: TRUE outputs 111#110
+//
+// Binary Comparaison Algorithm
+// for Turing Machine Simulator 
+
+name: Binary Comparaison
+init: q0
+accept: q5
+
+// AVANT LE #
+// Ici : si on voit 0, on copie 0 dans le ruban 1
+
+q0, 0, _, _
+q0, 0, 0, _ ,>,>,-
+
+
+q0, 1, _, _
+q0, 1, 1, _ ,>,>,-
+
+
+q0, #, _, _
+q1, #,_,_,>,-,-
+
+q1, 0, _, _
+q1, 0, _, 0 ,>,-,>
+
+q1, 1, _, _
+q1, 1, _, 1, >,-,>
+
+q1,_,_,_
+q2, _,_,_,-,<,<
+
+q2, _,0,0
+q2,_,0,0,-,<,<
+
+q2, _,1,1
+q2,_,1,1,-,<,<
+
+q2, _,1,0
+q2,_,1,0,-,<,<
+
+q2, _,0,1
+q2,_,0,1,-,<,<
+
+q2, _,_,1
+q2,_,_,1,-,<,<
+
+q2, _,_,0
+q2,_,_,0,-,<,<
+
+q2, _,1,_
+q2,_,1,_,-,<,<
+
+q2, _,0,_
+q2,_,0,_,-,<,<
+
+q2, _,_,_
+q3,_,_,_,-,-,-
+
+q3, _,_,_
+q4, _,_,_,-,>,>
+
+
+
+//  accepter si y est + grand (donc face a un vide)
+q4, _, _, 1 
+q5, _,_,1, -,-,-
+
+q4, _, _, 0 
+q5, _,_,0, -,-,-
+
+//  si meme longueur et tant que nombre identique : continuer a avancer
+
+q4, _, 1, 1 
+q4, _,1,1, -,>,>
+
+q4, _, 0, 0
+q4, _,0,0, -,>,>
+
+//  accepter si meme longueur mais y + grand (donc 1 en face d'un 0)
+
+q4, _, 0, 1 
+q5, _,0,1, -,-,-
+
+// tourner en boucle :
+
+q4, _, _, _
+q4, _,_,_, -,>,>
+
+
+
+
