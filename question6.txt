@@ -102,4 +102,158 @@ q4, _,_,_, -,>,>
 
 
 
+---- Recherche a#a#b#b
+// ATTENTION
+// ATTENTION
+// ATTENTION
+// ATTENTION
+// ATTENTION
+// ATTENTION
+// ATTENTION
+// ATTENTION :
+// IL Y A UN BUG : Quand chiffre du haut + grand que celui en bas
+
+
+
+
+// Input: a#b#c#d#a#e (a and b are binary numbers)
+// Ouput: TRUE
+// Example: TRUE outputs 1#0#1#0
+//
+// Binary Comparaison Algorithm
+// for Turing Machine Simulator 
+
+name: Recherche liste
+init: q0
+accept: q5
+
+q0, 1,_
+q0, 1, 1, >, >
+
+q0, 0,_
+q0, 0, 0, >, >
+
+q0, #,_
+q1, #, _, >, -
+
+q1, 0,_
+q2, 0,_,-,<
+
+q1, 1,_
+q2, 1,_,-,<
+
+q1, 0,0
+q2, 0,0,-,<
+
+q1, 1,1
+q2, 1,1,-,<
+
+q1, 0,1
+q2, 0,1,-,<
+
+q1, 1,0
+q2, 1,0,-,<
+
+// On remonte 
+
+q2, 0,1
+q2, 0,1,-,<
+
+q2, 1,0
+q2, 1,0,-,<
+
+q2, 1,1
+q2, 1,1,-,<
+
+q2, 0,0
+q2, 0,0,-,<
+
+// Une fois remonter
+q2, 0,_
+q3, 0,_,-,>
+
+q2, 1,_
+q3, 1,_,-,>
+
+// On compare avec q3 le ruban 1 et 2 jsuqu'a tomber sur #
+
+	// Si on tombe sur #, alors on reprend a q1
+    
+q3, #,1
+q1, #, 1, >, -
+
+q3, #,0
+q1, #, 0, >, -
+
+	// Si non identique, alors directement aller a # avec l'etat q6 
+
+q3, 1, 0
+q6, 1, 0, >, >
+
+q3, 0, 1
+q6, 0, 1, >,>
+
+
+// Etat q6 ----> Permet d'aller directement au dieze
+
+q6, 1, 1
+q6, 1, 1, >, -
+
+q6, 1, 0
+q6, 1, 0, >, -
+
+q6, 0, 0
+q6, 0, 0, >, -
+
+q6, 0, 1
+q6, 0, 1, >, -
+
+q6, #, 1
+q1, #, 1, >, -
+
+q6, #, 0
+q1, #, 0, >, -
+
+// La c si a la place d'un # ya un vide, donc c la fin, aller q4, boucle infini
+q6, _, 1
+q4, _, 1 , >, >
+
+q6, _, 0
+q4, _, 0 , >, >
+
+
+	// Si identique 
+    
+q3, 1, 1
+q3, 1, 1, >, >
+
+q3, 0, 0
+q3, 0, 0, >, >
+
+q3, #, _
+q5, #, _, -,-
+
+ // Si identique et a la fin :
+ 
+ 
+q3, _, _
+q5, _, _, -,-
+
+// boucle infinie
+
+q3, _, 0
+q4, _, 0, >, >
+
+q3, _, 1
+q4, _, 1, >, >
+
+q4, _, 0
+q4, _, 0, >, >
+
+q4, _, 1
+q4, _, 1, >, >
+
+q4, _, _
+q4, _, _, >, >
+
 
