@@ -103,157 +103,173 @@ q4, _,_,_, -,>,>
 
 
 ---- Recherche a#a#b#b
-// ATTENTION
-// ATTENTION
-// ATTENTION
-// ATTENTION
-// ATTENTION
-// ATTENTION
-// ATTENTION
-// ATTENTION :
-// IL Y A UN BUG : Quand chiffre du haut + grand que celui en bas
 
 
-
-
-// Input: a#b#c#d#a#e (a and b are binary numbers)
-// Ouput: TRUE
-// Example: TRUE outputs 1#0#1#0
+// Input: a#b (a and b are binary numbers)
+// Ouput: a+b
+// Example: 1011#10 outputs 1101
 //
-// Binary Comparaison Algorithm
+// Binary Addition Algorithm
 // for Turing Machine Simulator 
+// turingmachinesimulator.com
+// By Jose Antonio Matte
 
-name: Recherche liste
+name: Binary addition
 init: q0
 accept: q5
 
-q0, 1,_
-q0, 1, 1, >, >
+// Q0 : On copie le nombre de référence sur la bande 2
 
-q0, 0,_
-q0, 0, 0, >, >
+	// Quand on voit un 1, on copie le 1 dans la bande 2, et on avance le ruban 1 et 2
+q0, 1, _, _
+q0, 1, 1, _, >,>,-
 
-q0, #,_
-q1, #, _, >, -
+	// Quand on voit un 0, on copie le 0 dans la bande 2, et on avance le ruban 1 et 2
+q0, 0, _, _
+q0, 0, 0, _, >,>,-
 
-q1, 0,_
-q2, 0,_,-,<
+	// Quand on voit un #, c'est la fin du nombre d'interet, donc on passe a la prochaine étape : q1
+q0, #, _, _
+q1, #, #, _, >,-,-
 
-q1, 1,_
-q2, 1,_,-,<
+// q1 : on copie le nombre suivant dans le ruban 3
 
-q1, 0,0
-q2, 0,0,-,<
+	// Quand on voit un 1, on copie le 1 dans la bande 3, et on avance le ruban 1 et 3
+q1, 1, #, _
+q1, 1, #, 1, >,-,>
 
-q1, 1,1
-q2, 1,1,-,<
+	// Quand on voit un 0, on copie le 0 dans la bande 2, et on avance le ruban 1 et 3
+q1, 0, #, _
+q1, 0, #, 0, >,-,>
 
-q1, 0,1
-q2, 0,1,-,<
+	// Quand on voit un #, c'est la fin du nombre d'interet, donc on passe a la prochaine étape : q2
+q1, #, #, _
+q2, #, #, #, -,-,-
 
-q1, 1,0
-q2, 1,0,-,<
+	// q1 : quand on voit _, #, _, c'est le dernier chiffre, prendre en compte, on rajoute ici #
+    // on doit rajouter le # nous même 
 
-// On remonte 
+q1, _, #, _
+q2, #, #, #,-, -, -
 
-q2, 0,1
-q2, 0,1,-,<
 
-q2, 1,0
-q2, 1,0,-,<
+// q2 : on remonte a égalité les 2 chiffres, donc quand on a _, _ sur le ruban 2 et 3
 
-q2, 1,1
-q2, 1,1,-,<
-
-q2, 0,0
-q2, 0,0,-,<
-
-// Une fois remonter
-q2, 0,_
-q3, 0,_,-,>
-
-q2, 1,_
-q3, 1,_,-,>
-
-// On compare avec q3 le ruban 1 et 2 jsuqu'a tomber sur #
-
-	// Si on tombe sur #, alors on reprend a q1
+	// On remonte, ca commence par #, #,#
     
-q3, #,1
-q1, #, 1, >, -
+q2, #, #, #
+q2, #, #, #, -, <, <
 
-q3, #,0
-q1, #, 0, >, -
+q2, #, 1, 1
+q2, #, 1, 1, -, <, <
 
-	// Si non identique, alors directement aller a # avec l'etat q6 
+q2, #, 0, 0
+q2, #, 0, 0, -, <, <
 
-q3, 1, 0
-q6, 1, 0, >, >
+q2, #, 0, 1
+q2, #, 0, 1, -, <, <
 
-q3, 0, 1
-q6, 0, 1, >,>
+q2, #, 1, 0
+q2, #, 1, 0, -, <, <
 
+q2, #, 0, _
+q2, #, 0, _, -, <, <
 
-// Etat q6 ----> Permet d'aller directement au dieze
+q2, #, 1, _
+q2, #, 1, _, -, <, <
 
-q6, 1, 1
-q6, 1, 1, >, -
+q2, #, _, 0
+q2, #, _, 0, -, <, <
 
-q6, 1, 0
-q6, 1, 0, >, -
+q2, #, _, 1
+q2, #, _, 1, -, <, <
 
-q6, 0, 0
-q6, 0, 0, >, -
-
-q6, 0, 1
-q6, 0, 1, >, -
-
-q6, #, 1
-q1, #, 1, >, -
-
-q6, #, 0
-q1, #, 0, >, -
-
-// La c si a la place d'un # ya un vide, donc c la fin, aller q4, boucle infini
-q6, _, 1
-q4, _, 1 , >, >
-
-q6, _, 0
-q4, _, 0 , >, >
-
-
-	// Si identique 
+	// Quand on est a 2 cases vides dans ruban 1 et 2, alors on les chiffres sont bien alignés
+   	// On passe donc a l'étape suivante : q3, pour comparer
     
-q3, 1, 1
-q3, 1, 1, >, >
+q2, #, _, _
+q3, #, _, _, -, >,>
 
-q3, 0, 0
-q3, 0, 0, >, >
+// q3 : on compare
 
-q3, #, _
-q5, #, _, -,-
+	// cas simple : si vide en face d'un chiffre, alors c'est sure c'est pas le meme 
+    // on passerais donc a l'étape suivante
+    
+q3, #, 1, _
+q4, #, 1, _, -, -, -
 
- // Si identique et a la fin :
- 
- 
-q3, _, _
-q5, _, _, -,-
+q3, #, 0, _
+q4, #, 0, _, -, -, -
 
-// boucle infinie
+q3, #, _, 1
+q4, #, _, 1, -, -, -
 
-q3, _, 0
-q4, _, 0, >, >
+q3, #, _, 0
+q4, #, _, 0, -, -, -
 
-q3, _, 1
-q4, _, 1, >, >
+	// cas autre : on compare 1 a 1, si différent : on va q4
 
-q4, _, 0
-q4, _, 0, >, >
+q3, #, 1, 0
+q4, #, 1, 0, -, -, -
 
-q4, _, 1
-q4, _, 1, >, >
+q3, #, 0, 1
+q4, #, 0, 1, -, -, -
 
-q4, _, _
-q4, _, _, >, >
+	// si identique, alors on continue, et si on voit #, en meme temps , alors identique
+
+q3, #, 1, 1
+q3, #, 1, 1, -, >, >
+
+q3, #, 0, 0
+q3, #, 0, 0, -, >, >
+
+	// si #, alors identique, accepter : q5
+    
+q3, #, #, #
+q5, #, #, #, -, -, -
+
+// q4 : on continue jusqu'a #, pour retourner au départ et préparer le prochain numéro
+
+	// quand #, #, alors on s'arrte, on prépare le prepchain chiffre : q6
+q4, #, #, #
+q6, #, #, #, -, -, -
+
+q4, #, 1, 1
+q4, #, 1, 1, -, >, >
+
+q4, #, 0, 0
+q4, #, 0, 0, -, >, >
+
+q4, #, 1, 0
+q4, #, 1, 0, -, >, >
+
+q4, #, 0, 1
+q4, #, 0, 1, -, >, >
+
+q4, #, _, 1
+q4, #, _, 1, -, >, >
+
+q4, #, _, 0
+q4, #, _, 0, -, >, >
+
+q4, #, 1, _
+q4, #, 1, _, -, >, >
+
+q4, #, 0, _
+q4, #, 0, _, -, >, >
 
 
+// q6 : on supprime le chiffre du ruban 3
+
+q6, #, #, #
+q6, #, #, _, -, -, <
+
+q6, #, #, 1
+q6, #, #, _, -, -, <
+
+q6, #, #, 0
+q6, #, #, _, -, -, <
+	// quand on voit _, alors tout le chiffres a été supprimer, on peux réécrire le suivant : q1
+
+q6, #, #, _
+q1, #, #, _, >, -, -
