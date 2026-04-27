@@ -50,7 +50,7 @@ def configuration_initiale(mot, machine):
     for _ in range(machine.k - 1):
         rubans.append(['_'])
     
-    # On s'assure d'avoir un peu d'espace (le ruban est théoriquement infini)
+    # espace initial (ruban théoriquement infini)
     for r in rubans:
         r.extend(['_'] * 10)
         
@@ -65,7 +65,7 @@ def pas_de_calcul(config, machine):
     symboles_lus = []
     for i in range(machine.k):
         pos = config.positions[i]
-        # Extension dynamique du ruban si nécessaire
+        # Extension du ruban si nécessaire
         if pos >= len(config.rubans[i]):
             config.rubans[i].append('_')
         symboles_lus.append(config.rubans[i][pos])
@@ -87,8 +87,8 @@ def pas_de_calcul(config, machine):
                 config.rubans[i].insert(0, '_')
                 config.positions[i] = 0
     else:
-        # Si aucune transition, on bloque (ou on considère un échec)
-        config.etat_courant = machine.etat_final # Pour cet exercice, on force l'arrêt
+        # Si aucune transition, on bloque
+        config.etat_courant = machine.etat_final # on force l'arrêt
         
     return config
 
