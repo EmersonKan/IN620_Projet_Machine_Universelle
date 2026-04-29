@@ -44,11 +44,17 @@ Si L2 était décidable, on pourrait décider le problème de l'arrêt. Donc L2�
 
 
 
-— L3 = { <M>#x#y | M calcule la même chose sur les entrées x et y}
+— L3 = { <M>#x#y | M calcule la même chose sur les entrées x et y} (pqs sûr)
 Nous allons faire une preuve par réduction:
 Idée : Si L3​ était décidable, on pourrait résoudre le problème de l'arrêt.
-On construit une machine M'' qui:
-Si l'entrée est w, simule M sur w.
-Sinon, s'arrête immédiatement.
 
-On demande : " M'' calcule-t-elle la même chose sur w et sur une entrée fixe x "(?)
+Supposons que L3 est décidable :
+On construit une machine M' (qui ignore son entrée z) :
+Simuler M sur w.
+Si M s'arrête, alors M' écrit "42" sur le ruban et s'arrête.
+
+On demande au décideur de L3 : " M' calcule-t-elle la même sortie sur x et y ? " avec x et y deux mots différents au choix.
+Si OUI : Cela signifie que M'(x) = M'(y). Comme M' ne produit une sortie que si M(w) s'arrête, cela prouve que M s'arrête sur w.
+Si NON : Cela signifie que M' n'a pas produit la même sortie. 
+Dans notre construction, cela ne peut arriver que si la simulation de M(w) ne se termine jamais (les sorties sont alors indéfinies),
+donc M ne s'arrête pas sur w.
