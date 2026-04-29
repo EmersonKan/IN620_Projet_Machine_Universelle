@@ -31,6 +31,7 @@ L1 peut se terminer pour n'importe quelle n donc L1 est décidable.
 Nous allons faire une preuve par réduction:
 Idée : Si L2​ était décidable, on pourrait résoudre le problème de l'arrêt.
 
+Supposons que L2 est décidable:
 On construit une machine M' qui :
 Si l'entrée est w, simule M sur w.
 Sinon, s'arrête immédiatement.
@@ -50,4 +51,4 @@ On construit une machine M'' qui:
 Si l'entrée est w, simule M sur w.
 Sinon, s'arrête immédiatement.
 
-On demande : " M'' calcule-t-elle la même chose sur w et sur une entrée fixe x "
+On demande : " M'' calcule-t-elle la même chose sur w et sur une entrée fixe x "(?)
