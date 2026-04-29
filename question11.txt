@@ -28,6 +28,21 @@ L1 peut se terminer pour n'importe quelle n donc L1 est décidable.
 
 
 — L2 = { <M>#n | M s’arrête sur les mots de taille n}
+Nous allons faire une preuve par réduction:
+Idée : Si L2​ était décidable, on pourrait résoudre le problème de l'arrêt.
+On construit une machine M' qui :
+
+Si l'entrée est w, simule M sur w.
+Sinon, s'arrête immédiatement.
+
+On demande : "M′ s'arrête-t-elle sur tous les mots de taille |w| ?"
+
+Si oui : M′ s'arrête sur w (car w est de taille |w|), donc M s'arrête sur w.
+Si non : M′ ne s'arrête pas sur w, donc M ne s'arrête pas sur w.
+
+Si L2 était décidable, on pourrait décider le problème de l'arrêt. Donc L2​ est indécidable.
+
 
 
 — L3 = { <M>#x#y | M calcule la même chose sur les entrées x et y}
+
