@@ -1,1 +1,33 @@
+Question 11 : Pour les langages suivants, prouver s’ils sont décidables ou indécidables.
 
+Preuve d'indécidabilité:
+Nous allons faire une réduction du problème de l'arrêt aux problèmes de language indécidable.
+
+Definition :
+Problème de l’arrêt (HALT) :
+Entrée : Une machine de Turing < M > et une entrée x.
+Question : Est-ce que M s’arrête sur x ?
+
+Nous nous basons sur le théorème que HALT est indécidable.
+
+
+— L1 = {<M>#n | M s’arrête sur n en moins de n étapes}
+On peut simuler M sur l'entrée n pendant au plus n étapes.
+Si M s'arrête avant l'étape n+1, on accepte, sinon on rejette.
+
+Algorithme:
+fonction L1_decidable(M, n):
+    config = configuration_initiale(n, M)
+    pour étape de 1 à n:
+        si config.etat_courant == M.etat_final:
+            retourner VRAI
+        config = pas_de_calcul(config, M)
+    retourner FAUX
+
+L1 peut se terminer pour n'importe quelle n donc L1 est décidable.
+
+
+— L2 = { <M>#n | M s’arrête sur les mots de taille n}
+
+
+— L3 = { <M>#x#y | M calcule la même chose sur les entrées x et y}
