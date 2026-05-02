@@ -135,7 +135,7 @@ accept: stop
 start, 1
 stop, 0, >
 """
-    print("--- Test de lecture du nouveau format ---")
+    print("--- Test ---")
     try:
         machine = lire_machine(contenu_test)
         res = simuler("1", machine, debug=False)
