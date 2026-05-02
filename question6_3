@@ -12,18 +12,18 @@ accept: q3
 
 // Copier le premier nombre sur le ruban 2
 	
-	// On copie jusqu'au #
+// On copie jusqu'au #
     
 q0,1,_,_
 q0,1,1,_,>,>,-
 
-	// Au # on passe a l'étape suivante
+// Au # on passe a l'étape suivante
     
 q0,#,_,_
 q1,#,_,_,-,<,-
 
 // q1 : Pour le nombre de 1 apres #, on copie le ruban 2 dans 3
-	// On remonte le ruban 2 avant, jus'qua avoir du vide sur r2
+// On remonte le ruban 2 avant, jus'qua avoir du vide sur r2
 
 q1,#,1,_
 q1,#,1,_,-,<,-
@@ -31,7 +31,7 @@ q1,#,1,_,-,<,-
 q1,1,1,_
 q1,1,1,_,-,<,-
 
-	// Quand on voit vide, on passe a l'etape suivante
+// Quand on voit vide, on passe a l'etape suivante
     
 q1,#,_,_
 q2,#,_,_,>,>,-
@@ -44,12 +44,12 @@ q2,1,_,_,>,>,-
 q2,1,1,_
 q2,1,1,1,-,>,>
 
-	// q2 : quand on voit ruban 2 vide, on s'arrete et on remonte: q1
+// q2 : quand on voit ruban 2 vide, on s'arrete et on remonte: q1
 
 q2,1,_,_
 q1,1,_,_,-,<,-
 
-	// q2 : si on voit vide dans ruban 1, on s'arrete
+// q2 : si on voit vide dans ruban 1, on s'arrete
     
 q2,_,1,1
 q3,_,1,1,-,-,-

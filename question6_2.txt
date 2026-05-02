@@ -1,48 +1,39 @@
 // Recherche a#a#b#b
 
-// Input: a#b (a and b are binary numbers)
-// Ouput: a+b
-// Example: 1011#10 outputs 1101
-//
-// Binary Addition Algorithm
-// for Turing Machine Simulator 
-// turingmachinesimulator.com
-// By Jose Antonio Matte
-
-name: Binary addition
+name: Recherche
 init: q0
 accept: q5
 
 // Q0 : On copie le nombre de référence sur la bande 2
 
-	// Quand on voit un 1, on copie le 1 dans la bande 2, et on avance le ruban 1 et 2
+// Quand on voit un 1, on copie le 1 dans la bande 2, et on avance le ruban 1 et 2
 q0,1,_,_
 q0,1,1,_,>,>,-
 
-	// Quand on voit un 0, on copie le 0 dans la bande 2, et on avance le ruban 1 et 2
+// Quand on voit un 0, on copie le 0 dans la bande 2, et on avance le ruban 1 et 2
 q0,0,_,_
 q0,0,0,_,>,>,-
 
-	// Quand on voit un #, c'est la fin du nombre d'interet, donc on passe a la prochaine étape : q1
+// Quand on voit un #, c'est la fin du nombre d'interet, donc on passe a la prochaine étape : q1
 q0,#,_,_
 q1,#,#,_,>,-,-
 
 // q1 : on copie le nombre suivant dans le ruban 3
 
-	// Quand on voit un 1, on copie le 1 dans la bande 3, et on avance le ruban 1 et 3
+// Quand on voit un 1, on copie le 1 dans la bande 3, et on avance le ruban 1 et 3
 q1,1,#,_
 q1,1,#,1,>,-,>
 
-	// Quand on voit un 0, on copie le 0 dans la bande 2, et on avance le ruban 1 et 3
+// Quand on voit un 0, on copie le 0 dans la bande 2, et on avance le ruban 1 et 3
 q1,0,#,_
 q1,0,#,0,>,-,>
 
-	// Quand on voit un #, c'est la fin du nombre d'interet, donc on passe a la prochaine étape : q2
+// Quand on voit un #, c'est la fin du nombre d'interet, donc on passe a la prochaine étape : q2
 q1,#,#,_
 q2,#,#,#,-,-,-
 
-	// q1 : quand on voit _, #, _, c'est le dernier chiffre, prendre en compte, on rajoute ici #
-    // on doit rajouter le # nous même 
+// q1 : quand on voit _, #, _, c'est le dernier chiffre, prendre en compte, on rajoute ici #
+// on doit rajouter le # nous même 
 
 q1,_,#,_
 q2,#,#,#,-,-,-
@@ -50,7 +41,7 @@ q2,#,#,#,-,-,-
 
 // q2 : on remonte a égalité les 2 chiffres, donc quand on a _, _ sur le ruban 2 et 3
 
-	// On remonte, ca commence par #, #,#
+// On remonte, ca commence par #, #,#
     
 q2,#,#,#
 q2,#,#,#,-,<,<
@@ -79,16 +70,16 @@ q2,#,_,0,-,<,<
 q2,#,_,1
 q2,#,_,1,-,<,<
 
-	// Quand on est a 2 cases vides dans ruban 1 et 2, alors on les chiffres sont bien alignés
-   	// On passe donc a l'étape suivante : q3, pour comparer
+// Quand on est a 2 cases vides dans ruban 1 et 2, alors on les chiffres sont bien alignés
+// On passe donc a l'étape suivante : q3, pour comparer
     
 q2,#,_,_
 q3,#,_,_,-,>,>
 
 // q3 : on compare
 
-	// cas simple : si vide en face d'un chiffre, alors c'est sure c'est pas le meme 
-    // on passerais donc a l'étape suivante
+// cas simple : si vide en face d'un chiffre, alors c'est sure c'est pas le meme 
+// on passerais donc a l'étape suivante
     
 q3,#,1,_
 q4,#,1,_,-,-,-
@@ -102,7 +93,7 @@ q4,#,_,1,-,-,-
 q3,#,_,0
 q4,#,_,0,-,-,-
 
-	// cas autre : on compare 1 a 1, si différent : on va q4
+// cas autre : on compare 1 a 1, si différent : on va q4
 
 q3,#,1,0
 q4,#,1,0,-,-,-
@@ -110,7 +101,7 @@ q4,#,1,0,-,-,-
 q3,#,0,1
 q4,#,0,1,-,-,-
 
-	// si identique, alors on continue, et si on voit #, en meme temps , alors identique
+// si identique, alors on continue, et si on voit #, en meme temps , alors identique
 
 q3,#,1,1
 q3,#,1,1,-,>,>
@@ -118,14 +109,14 @@ q3,#,1,1,-,>,>
 q3,#,0,0
 q3,#,0,0,-,>,>
 
-	// si #, alors identique, accepter : q5
+// si #, alors identique, accepter : q5
     
 q3,#,#,#
 q5,#,#,#,-,-,-
 
 // q4 : on continue jusqu'a #, pour retourner au départ et préparer le prochain numéro
 
-	// quand #, #, alors on s'arrte, on prépare le prepchain chiffre : q6
+// quand #, #, alors on s'arrte, on prépare le prepchain chiffre : q6
 q4,#,#,#
 q6,#,#,#,-,-,-
 
@@ -164,7 +155,8 @@ q6,#,#,_,-,-,<
 
 q6,#,#,0
 q6,#,#,_,-,-,<
-	// quand on voit _, alors tout le chiffres a été supprimer, on peux réécrire le suivant : q1
+
+// quand on voit _, alors tout le chiffres a été supprimer, on peux réécrire le suivant : q1
 
 q6,#,#,_
 q1,#,#,_,>,-,-
