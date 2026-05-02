@@ -183,5 +183,5 @@ def simuler_fichier(nom_fichier, entree):
         print(f"Erreur : Le fichier '{nom_fichier}' est introuvable.")
     except Exception as e:
         print(f"Une erreur est survenue : {e}")
-
+simuler_fichier("question6_1.txt","110#111" )
 simuler_fichier("question6_2.txt","111#1#101#1#111#11" )
