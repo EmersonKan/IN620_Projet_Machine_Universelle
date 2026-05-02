@@ -2,12 +2,13 @@ import sys
 
 # Question 1: Structures de données
 class MT:
-    def __init__(self, transitions, k=1):
+    def __init__(self, transitions, k=1, initial='q0', final='q5'):
         self.transitions = transitions  # (état, symboles_lus) -> (nouvel_état, symboles, directions)
         self.k = k
-        self.etat_initial = 'I'
-        self.etat_final = 'F'
+        self.etat_initial = initial
+        self.etat_final = final
 
+ 
 class Configuration:
     def __init__(self, etat, rubans, positions):
         self.etat_courant = etat
@@ -47,7 +48,7 @@ def lire_machine(contenu_fichier):
                 nouvel_etat = partie_d[0].strip()
                 ecrits = tuple(partie_d[1:1+k])
                 # Conversion des directions : > en R, < en L, - en S
-                dir = tuple(parts_d[1+k:1+2*k])
+                dir = tuple(partie_d[1+k:1+2*k])
                 
                 transitions[(etat_actuel, lus)] = (nouvel_etat, ecrits, dir)
                 i += 2 # On avance de deux lignes car une transition = 2 lignes
@@ -122,7 +123,7 @@ def simuler(mot, machine, debug=False):
         config = pas_de_calcul(config, machine)
         if debug: afficher_config(config)
         
-    return "".join(config.rubans[0]).strip('_') # Retourne le contenu du ruban 1
+    return "".join(config.rubans[0]).replace('_', '').strip() # Retourne le contenu du ruban 1
 
 ### Tests des fonctions ###
 
@@ -137,19 +138,24 @@ stop, 0, >
     print("--- Test de lecture du nouveau format ---")
     try:
         machine = lire_machine(contenu_test)
-        print(f"Machine chargée ! État initial: {machine.etat_initial}, Final: {machine.etat_final}")
+        res = simuler("1", machine, debug=False)
         
-        # Test de simulation simple
-        res = simuler("1", machine, debug=True)
-        print(f"Résultat pour '1': {res} (Attendu: '0')")
+        # Nettoyage du résultat pour la comparaison
+        res_propre = res.strip() 
+        attendu = "0"
         
-        if res == "0":
-            print("✅ Succès : Le format deux lignes est bien géré.")
+        print(f"Résultat obtenu: '{res_propre}'")
+        print(f"Résultat attendu: '{attendu}'")
+        
+        # On compare les chaînes nettoyées
+        if res_propre == attendu:
+            print(" Succès : Le résultat est correct !")
         else:
-            print("❌ Échec : Le résultat est incorrect.")
+            print(" Échec : Les chaînes ne correspondent pas exactement.")
+            # Debug : affiche les codes ASCII pour voir les caractères invisibles
+            print(f"Codes ASCII obtenus: {[ord(c) for c in res_propre]}")
             
     except Exception as e:
-        print(f"❌ Erreur lors du test : {e}")
-
+        print(f" Erreur système : {e}")
 if __name__ == "__main__":
     verifier_simulateur()
