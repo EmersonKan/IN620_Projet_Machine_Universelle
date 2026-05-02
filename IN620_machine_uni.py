@@ -91,7 +91,9 @@ def pas_de_calcul(config, machine):
             # Mouvements : > (droite), < (gauche), - (immobile)
             if directions[i] == '>': config.positions[i] += 1
             elif directions[i] == '<': config.positions[i] -= 1
-            
+            elif directions[i] == '-':
+                pass
+                
             if config.positions[i] < 0:
                 config.rubans[i].insert(0, '_')
                 config.positions[i] = 0
