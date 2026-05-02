@@ -159,3 +159,19 @@ stop, 0, >
         print(f" Erreur système : {e}")
 if __name__ == "__main__":
     verifier_simulateur()
+
+def simuler_fichier(nom_fichier, entree):
+    try:
+        with open(nom_fichier, "r", encoding="utf-8") as f:
+            contenu = f.read()
+        ma_machine = lire_machine(contenu)
+        print(f"--- Test de la machine : {nom_fichier} ---")
+        print(f"Entrée : {entree}")
+        resultat = simuler(entree, ma_machine, debug=True)  
+        print(f"Résultat final : {resultat}")
+        return resultat
+
+    except FileNotFoundError:
+        print(f"Erreur : Le fichier '{nom_fichier}' est introuvable.")
+    except Exception as e:
+        print(f"Une erreur est survenue : {e}")
