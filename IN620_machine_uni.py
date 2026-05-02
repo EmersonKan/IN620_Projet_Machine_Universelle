@@ -17,32 +17,44 @@ class Configuration:
 # Question 2: Initialisation depuis un fichier
 def lire_machine(contenu_fichier):
     transitions = {}
+    etat_init = 'q0' # valeurs par défaut 
+    etat_final = 'q5'
     k = 1
-    lignes = contenu_fichier.strip().split('\n')
     
-    for ligne in lignes:
-        ligne = ligne.split('//')[0].strip() # supprimer les commentaires
-        if not ligne: continue
+    lignes = [l.strip() for l in contenu_fichier.split('\n') if l.strip() and not l.startswith('//')]
+    
+    i = 0
+    while i < len(lignes):
+        ligne = lignes[i]
         
-        # Format attendu: etat_lu,symb1,symb2... -> etat_suiv,ecrit1,ecrit2...,dir1,dir2...
-        try:
-            gauche, droite = ligne.split('->')
-            parties_g = gauche.strip().split(',')
-            parties_d = droite.strip().split(',')
-            
-            etat_actuel = parties_g[0]
-            lus = tuple(parties_g[1:])
-            k = len(lus) # Détermine le nombre de rubans 
-            
-            nouvel_etat = parties_d[0]
-            ecrits = tuple(parties_d[1:1+k])
-            dirs = tuple(parties_d[1+k:])
-            
-            transitions[(etat_actuel, lus)] = (nouvel_etat, ecrits, dirs)
-        except:
-            continue
-            
-    return MT(transitions, k)
+        # Lecture des paramètres de la machine
+        if ligne.startswith('init:'):
+            etat_init = ligne.split(':')[1].strip()
+            i += 1
+        elif ligne.startswith('accept:'):
+            etat_final = ligne.split(':')[1].strip()
+            i += 1
+        elif ligne.startswith('name:'):
+            i += 1
+        else:
+            try:
+                partie_g = ligne.split(',')
+                etat_actuel = partie_g[0].strip()
+                lus = tuple(s.strip() for s in partie_g[1:])
+                k = len(lus)
+                
+                partie_d = lignes[i+1].split(',')
+                nouvel_etat = partie_d[0].strip()
+                ecrits = tuple(partie_d[1:1+k])
+                # Conversion des directions : > en R, < en L, - en S
+                dir = tuple(parts_d[1+k:1+2*k])
+                
+                transitions[(etat_actuel, lus)] = (nouvel_etat, ecrits, dir)
+                i += 2 # On avance de deux lignes car une transition = 2 lignes
+            except (IndexError, ValueError):
+                i += 1
+
+    return MT(transitions, k, initial=etat_init, final=etat_final)
 
 def configuration_initiale(mot, machine):
     # Le mot d'entrée est sur le premier ruban, les autres sont vides
@@ -61,13 +73,11 @@ def pas_de_calcul(config, machine):
     if config.etat_courant == machine.etat_final:
         return config
     
-    # Lire les symboles sous les têtes
+    # Lecture des têtes
     symboles_lus = []
     for i in range(machine.k):
         pos = config.positions[i]
-        # Extension du ruban si nécessaire
-        if pos >= len(config.rubans[i]):
-            config.rubans[i].append('_')
+        if pos >= len(config.rubans[i]): config.rubans[i].append('_')
         symboles_lus.append(config.rubans[i][pos])
     
     cle = (config.etat_courant, tuple(symboles_lus))
@@ -77,18 +87,16 @@ def pas_de_calcul(config, machine):
         config.etat_courant = nouvel_etat
         
         for i in range(machine.k):
-            # Écriture
             config.rubans[i][config.positions[i]] = ecrits[i]
-            # Mouvement
+            # Mouvements : > (droite), < (gauche), - (immobile)
             if directions[i] == '>': config.positions[i] += 1
             elif directions[i] == '<': config.positions[i] -= 1
-            # Sécurité position négative
+            
             if config.positions[i] < 0:
                 config.rubans[i].insert(0, '_')
                 config.positions[i] = 0
     else:
-        # Si aucune transition, on bloque
-        config.etat_courant = machine.etat_final # on force l'arrêt
+        pass
         
     return config
 
