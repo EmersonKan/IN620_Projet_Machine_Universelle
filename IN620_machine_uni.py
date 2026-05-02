@@ -185,3 +185,4 @@ def simuler_fichier(nom_fichier, entree):
         print(f"Une erreur est survenue : {e}")
 simuler_fichier("question6_1.txt","110#111" )
 simuler_fichier("question6_2.txt","111#1#101#1#111#11" )
+simuler_fichier("question6_3.txt","111#11" )
