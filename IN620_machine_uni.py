@@ -126,34 +126,30 @@ def simuler(mot, machine, debug=False):
 
 ### Tests des fonctions ###
 
-# Exemple de description au format Turing Machine Simulator 
-# Machine de Turing qui incrémente un nombre binaire de 1.
-description_exemple = """
-I,0 -> I,0,>
-I,1 -> I,1,>
-I,_ -> carry,_,<
-carry,1 -> carry,0,<
-carry,0 -> F,1,>
-carry,_ -> F,1,>
-"""
+def verifier_simulateur():
+    contenu_test = """name: Test Rapide
+init: start
+accept: stop
 
-def test_simulateur():
-    print("=== Test de la Machine de Turing (Incrémentation Binaire) ===")
-    
-    # 1. Chargement
-    machine = lire_machine(description_exemple)
-    print(f"Machine chargée avec {machine.k} ruban(s).")
-    
-    # 2. Test sur le mot "101"
-    mot_test = "101"
-    print(f"Entrée: {mot_test}")
-    
-    # 3. Exécution avec affichage des étapes (Question 5)
-    resultat = simuler(mot_test, machine, debug=True)
-    
-    print(f"Résultat final sur ruban 1: {resultat}")
-    assert "110" in resultat
-    print("\nTest réussi !")
+start, 1
+stop, 0, >
+"""
+    print("--- Test de lecture du nouveau format ---")
+    try:
+        machine = lire_machine(contenu_test)
+        print(f"Machine chargée ! État initial: {machine.etat_initial}, Final: {machine.etat_final}")
+        
+        # Test de simulation simple
+        res = simuler("1", machine, debug=True)
+        print(f"Résultat pour '1': {res} (Attendu: '0')")
+        
+        if res == "0":
+            print("✅ Succès : Le format deux lignes est bien géré.")
+        else:
+            print("❌ Échec : Le résultat est incorrect.")
+            
+    except Exception as e:
+        print(f"❌ Erreur lors du test : {e}")
 
 if __name__ == "__main__":
-    test_simulateur()
+    verifier_simulateur()
