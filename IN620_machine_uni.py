@@ -18,44 +18,52 @@ class Configuration:
 # Question 2: Initialisation depuis un fichier
 def lire_machine(contenu_fichier):
     transitions = {}
-    etat_init = 'q0' # valeurs par défaut 
+    etat_init = 'q0' 
     etat_final = 'q5'
-    k = 1
+    k_max = 1 
     
+    # On nettoie les lignes (supprime les lignes vides et les commentaires)
     lignes = [l.strip() for l in contenu_fichier.split('\n') if l.strip() and not l.startswith('//')]
     
     i = 0
     while i < len(lignes):
         ligne = lignes[i]
         
-        # Lecture des paramètres de la machine
         if ligne.startswith('init:'):
             etat_init = ligne.split(':')[1].strip()
-            i += 1
         elif ligne.startswith('accept:'):
             etat_final = ligne.split(':')[1].strip()
-            i += 1
         elif ligne.startswith('name:'):
-            i += 1
+            pass # On ignore simplement
         else:
+            # On est sur une ligne de lecture (Ligne 1 d'un bloc)
             try:
-                partie_g = ligne.split(',')
-                etat_actuel = partie_g[0].strip()
-                lus = tuple(s.strip() for s in partie_g[1:])
-                k = len(lus)
-                
-                partie_d = lignes[i+1].split(',')
-                nouvel_etat = partie_d[0].strip()
-                ecrits = tuple(partie_d[1:1+k])
-                # Conversion des directions : > en R, < en L, - en S
-                dir = tuple(partie_d[1+k:1+2*k])
-                
-                transitions[(etat_actuel, lus)] = (nouvel_etat, ecrits, dir)
-                i += 2 # On avance de deux lignes car une transition = 2 lignes
-            except (IndexError, ValueError):
-                i += 1
+                # Analyse ligne 1
+                partie_g = [s.strip() for s in ligne.split(',')]
+                if len(partie_g) > 1: # On vérifie que c'est bien une transition
+                    etat_actuel = partie_g[0]
+                    lus = tuple(partie_g[1:])
+                    
+                    k_actuel = len(lus)
+                    if k_actuel > k_max: k_max = k_actuel
+                    
+                    # Analyse ligne 2 (l'action)
+                    i += 1 # On passe à la ligne suivante
+                    partie_d = [s.strip() for s in lignes[i].split(',')]
+                    nouvel_etat = partie_d[0]
+                    
+                    # On découpe selon k_actuel
+                    ecrits = tuple(partie_d[1 : 1 + k_actuel])
+                    directions = tuple(partie_d[1 + k_actuel : 1 + 2 * k_actuel])
+                    
+                    transitions[(etat_actuel, lus)] = (nouvel_etat, ecrits, directions)
+            except Exception as e:
+                # En cas d'erreur de format, on passe
+                pass
+        
+        i += 1 # On avance à la ligne suivante (ou à la ligne après le bloc de 2)
 
-    return MT(transitions, k, initial=etat_init, final=etat_final)
+    return MT(transitions, k_max, initial=etat_init, final=etat_final)
 
 def configuration_initiale(mot, machine):
     # Le mot d'entrée est sur le premier ruban, les autres sont vides
@@ -138,7 +146,7 @@ stop, 0, >
     print("--- Test ---")
     try:
         machine = lire_machine(contenu_test)
-        res = simuler("1", machine, debug=False)
+        res = simuler("1", machine, debug=True)
         
         # Nettoyage du résultat pour la comparaison
         res_propre = res.strip() 
@@ -175,3 +183,5 @@ def simuler_fichier(nom_fichier, entree):
         print(f"Erreur : Le fichier '{nom_fichier}' est introuvable.")
     except Exception as e:
         print(f"Une erreur est survenue : {e}")
+
+simuler_fichier("question6_1.txt","110#111" )
