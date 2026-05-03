@@ -18,7 +18,7 @@ class Configuration:
 # Question 2: Initialisation depuis un fichier
 def lire_machine(contenu_fichier):
     transitions = {}
-    etat_init = 'q0' 
+    etat_init = 'q0' # valeur par défaut
     etat_final = 'q5'
     k_max = 1 
     
@@ -34,43 +34,41 @@ def lire_machine(contenu_fichier):
         elif ligne.startswith('accept:'):
             etat_final = ligne.split(':')[1].strip()
         elif ligne.startswith('name:'):
-            pass # On ignore simplement
+            pass
         else:
-            # On est sur une ligne de lecture (Ligne 1 d'un bloc)
             try:
-                # Analyse ligne 1
+                # ligne ldcture
                 partie_g = [s.strip() for s in ligne.split(',')]
                 if len(partie_g) > 1: # On vérifie que c'est bien une transition
-                    etat_actuel = partie_g[0]
-                    lus = tuple(partie_g[1:])
+                    etat_actuel = partie_g[0] # 1er élément est l'état
+                    lus = tuple(partie_g[1:])  # reste sont les symboles
                     
                     k_actuel = len(lus)
-                    if k_actuel > k_max: k_max = k_actuel
+                    if k_actuel > k_max: k_max = k_actuel # on regarde le nb de symbole sur le 1er ruban
                     
-                    # Analyse ligne 2 (l'action)
+                    # ligne action
                     i += 1 # On passe à la ligne suivante
                     partie_d = [s.strip() for s in lignes[i].split(',')]
-                    nouvel_etat = partie_d[0]
+                    nouvel_etat = partie_d[0] # 1er élément est l'état qu'on va mettre
                     
-                    # On découpe selon k_actuel
+                    # On découpe en utilsant k_actuel
                     ecrits = tuple(partie_d[1 : 1 + k_actuel])
                     directions = tuple(partie_d[1 + k_actuel : 1 + 2 * k_actuel])
                     
                     transitions[(etat_actuel, lus)] = (nouvel_etat, ecrits, directions)
             except Exception as e:
-                # En cas d'erreur de format, on passe
+                # En cas d'erreur, on passe
                 pass
         
-        i += 1 # On avance à la ligne suivante (ou à la ligne après le bloc de 2)
+        i += 1 # On avance à la ligne suivante
 
     return MT(transitions, k_max, initial=etat_init, final=etat_final)
 
 def configuration_initiale(mot, machine):
-    # Le mot d'entrée est sur le premier ruban, les autres sont vides
+    # Le mot d'entrée sur le premier ruban, les autres vides
     rubans = [list(mot) if len(mot) > 0 else ['_']]
     for _ in range(machine.k - 1):
         rubans.append(['_'])
-    
     # espace initial (ruban théoriquement infini)
     for r in rubans:
         r.extend(['_'] * 10)
@@ -79,34 +77,36 @@ def configuration_initiale(mot, machine):
 
 # Question 3: Pas de calcul
 def pas_de_calcul(config, machine):
-    if config.etat_courant == machine.etat_final:
+    if config.etat_courant == machine.etat_final: #si on est déjà dans l'état final
         return config
     
-    # Lecture des têtes
+    # Lecture
     symboles_lus = []
     for i in range(machine.k):
         pos = config.positions[i]
-        if pos >= len(config.rubans[i]): config.rubans[i].append('_')
+        if pos >= len(config.rubans[i]): config.rubans[i].append('_')#rajouter _ si la tête sort 
         symboles_lus.append(config.rubans[i][pos])
     
-    cle = (config.etat_courant, tuple(symboles_lus))
+    cle = (config.etat_courant, tuple(symboles_lus)) # règle à effectuer
     
-    if cle in machine.transitions:
+    if cle in machine.transitions: # nous cherchon la transition
         nouvel_etat, ecrits, directions = machine.transitions[cle]
-        config.etat_courant = nouvel_etat
+        config.etat_courant = nouvel_etat # puis mettre à jour l'état
         
         for i in range(machine.k):
-            config.rubans[i][config.positions[i]] = ecrits[i]
-            # Mouvements : > (droite), < (gauche), - (immobile)
-            if directions[i] == '>': config.positions[i] += 1
-            elif directions[i] == '<': config.positions[i] -= 1
+            config.rubans[i][config.positions[i]] = ecrits[i] # on écrit le nouveau symbole
+            if directions[i] == '>':
+                config.positions[i] += 1
+            elif directions[i] == '<': 
+                config.positions[i] -= 1
             elif directions[i] == '-':
                 pass
                 
-            if config.positions[i] < 0:
+            if config.positions[i] < 0: # si la position négative, on rajoute des _ à gauche
                 config.rubans[i].insert(0, '_')
                 config.positions[i] = 0
     else:
+        #si pas de règle, on passe
         pass
         
     return config
@@ -114,22 +114,23 @@ def pas_de_calcul(config, machine):
 # Question 5: Affichage
 def afficher_config(config):
     print(f"État: {config.etat_courant}")
+    # Pour chaque ruban, on affiche le contenu et la position du pointeur '^'
     for i in range(len(config.rubans)):
-        # On nettoie l'affichage des '_' superflus à la fin
+        # On nettoie les '_' de trop
         ruban_str = "".join(config.rubans[i]).rstrip('_') + "_"
-        pointeur = " " * config.positions[i] + "^"
+        pointeur = " " * config.positions[i] + "^" #on place le pointeur
         print(f"R{i}: {ruban_str}")
         print(f"    {pointeur}")
-    print("-" * 20)
+    print("-" * 20) #on sépare les étapes
 
 # Question 4: Simulation complète
 def simuler(mot, machine, debug=False):
     config = configuration_initiale(mot, machine)
-    if debug: afficher_config(config)
+    if debug: afficher_config(config) #on montre la config intial
     
     while config.etat_courant != machine.etat_final:
         config = pas_de_calcul(config, machine)
-        if debug: afficher_config(config)
+        if debug: afficher_config(config) #on montre les étapes
         
     return "".join(config.rubans[0]).replace('_', '').strip() # Retourne le contenu du ruban 1
 
